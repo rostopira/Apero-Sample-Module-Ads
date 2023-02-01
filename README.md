@@ -11,7 +11,7 @@ AperoModuleAds is SDK ads by [Apero](https://apero.vn/). It has built in some sd
 # Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:5.5.3-alpha3'
+	implementation 'com.github.AperoVN:AperoModuleAds:5.5.6-alpha02'
 ~~~	 
 # Summary
 * [Setup AperoAd](#setup_aperoad)
