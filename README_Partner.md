@@ -1,23 +1,24 @@
 
 # AperoModuleAds
-AperoModuleAds is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy use like
+This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy use like
 - Admob
 - MAX Mediation(Applovin)
 - Google Billing
 - Adjust
 - Appsflyer
+- Facebook SDK
 - Firebase auto log tracking event, tROAS
 
 # Import Module
 ~~~
-	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:5.5.6-alpha02'
-~~~	 
+    maven { url 'https://jitpack.io' }
+    implementation 'com.github.AperoVN:AperoModuleAds:5.6.0-alpha04'
+~~~  
 # Summary
 * [Setup AperoAd](#setup_aperoad)
-	* [Setup id ads](#set_up_ads)
-	* [Config ads](#config_ads)
-	* [Ads Formats](#ads_formats)
+    * [Setup id ads](#set_up_ads)
+    * [Config ads](#config_ads)
+    * [Ads Formats](#ads_formats)
 
 * [Billing App](#billing_app)
 * [Ads rule](#ads_rule)
@@ -37,14 +38,14 @@ We recommend you to setup 2 environments for your project, and only use test id 
               manifestPlaceholders = [ ad_app_id:"AD_APP_ID_TEST" ]
               buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL_TEST\""
               buildConfigField "String", "ads_inter_turn_off", "\"AD_ID_INTERSTIAL_TEST\""
-	      buildConfigField "Boolean", "build_debug", "true"
+              buildConfigField "Boolean", "build_debug", "true"
            }
        appProd {
             // ADS CONFIG BEGIN (required)
                manifestPlaceholders = [ ad_app_id:"AD_APP_ID" ]
                buildConfigField "String", "ads_inter_splash", "\"AD_ID_INTERSTIAL\""
                buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL\""
-	       buildConfigField "Boolean", "build_debug", "false"
+               buildConfigField "Boolean", "build_debug", "false"
             // ADS CONFIG END (required)
            }
       }
@@ -54,19 +55,35 @@ AndroidManiafest.xml
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${ad_app_id}" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.AutoInitEnabled"
+            android:value="true" />
+        <meta-data
+            android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+            android:value="true" />
+        <meta-data
+            android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
+            android:value="true" />
 ~~~
 ## <a id="config_ads"></a>Config ads
 Create class Application
 
 Configure your mediation here. using PROVIDER_ADMOB or PROVIDER_MAX
 
-*** Note:Cannot use id ad test for production enviroment 
+*** Note: 
+- Don't use id ad test for production environment 
+- Environment:
+    - ENVIRONMENT_DEVELOP: for test ads and billing.
+    - ENVIRONMENT_PRODUCTION: for prdouctions ads and billing.
 ~~~
 class App : AdsMultiDexApplication(){
     @Override
     public void onCreate() {
         super.onCreate();
-	...
+    ...
         String environment = BuildConfig.build_debug ? AperoAdConfig.ENVIRONMENT_DEVELOP : AperoAdConfig.ENVIRONMENT_PRODUCTION;
         aperoAdConfig = new AperoAdConfig(this, AperoAdConfig.PROVIDER_ADMOB, environment);
 
@@ -93,7 +110,7 @@ class App : AdsMultiDexApplication(){
         Admob.getInstance().setDisableAdResumeWhenClickAds(true);
         // If true -> onNextAction() is called right after Ad Interstitial showed
         Admob.getInstance().setOpenActivityAfterShowInterAds(false);
-	}
+    }
 }
 ~~~
 AndroidManiafest.xml
@@ -129,19 +146,19 @@ SplashActivity
 Load ad interstital before show
 ~~~
   private fun loadInterCreate() {
-	ApInterstitialAd mInterstitialAd = AperoAd.getInstance().getInterstitialAds(this, idInter);
+    ApInterstitialAd mInterstitialAd = AperoAd.getInstance().getInterstitialAds(this, idInter);
   }
 ~~~
 Show and auto release ad interstitial
 ~~~
          if (mInterstitialAd.isReady()) {
                 AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
-			@Override
-			public void onNextAction() {
-			    super.onNextAction();
-			    Log.d(TAG, "onNextAction");
-			   startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
-			}
+            @Override
+            public void onNextAction() {
+                super.onNextAction();
+                Log.d(TAG, "onNextAction");
+               startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
+            }
                 
                 }, true);
             } else {
@@ -161,7 +178,7 @@ Show and auto release ad interstitial
 ~~~
 call load ad banner
 ~~~
-	bannerAdView.loadBanner(this, idBanner);
+    bannerAdView.loadBanner(this, idBanner);
 ~~~
 #### The older way:
 ~~~
@@ -173,13 +190,39 @@ call load ad banner
   android:layout_alignParentBottom="true"
   app:layout_constraintBottom_toBottomOf="parent" />
 ~~~
-call load ad banner
+#### Call load ad banner
+
+Normal banner in Activity/Fragment
 ~~~
-  AperoAd.getInstance().loadBanner(this, idBanner);
+AperoAd.getInstance().loadBanner(this, idBanner);
+or
+AperoAd.getInstance().loadBannerFragment(final Activity mActivity, String id, final View rootView);
 ~~~
+Inline banner in Activity/Fragment
+inlineStyle:
+- Admob.BANNER_INLINE_SMALL_STYLE: for small inline banner
+- Admob.BANNER_INLINE_LARGE_STYLE: for large inline banner
+~~~
+Admob.getInstance().loadInlineBanner(activity, idBanner, inlineStyle, adCallback);
+or
+Admob.getInstance().loadInlineBannerFragment(final Activity activity, String id, final View rootView, String inlineStyle);
+~~~
+Collapsible banner in Activity/Fragment
+gravity:
+* AppConstant.TOP: banner anchor at the top of layout
+* AppConstant.BOTTOM: banner anchor at the bottom of layout
+~~~
+Admob.getInstance().loadCollapsibleBanner(final Activity mActivity, String id, String gravity, final AdCallback callback)
+or
+Admob.getInstance().loadCollapsibleBannerFragment(final Activity mActivity, String id, final View rootView, String gravity, final AdCallback callback);
+~~~
+
 
 ### Ad Native
 Load ad native before show
+
+*** Notes: Admob and MAX use different layout
+
 ~~~
         AperoAd.getInstance().loadNativeAdResultCallback(this,ID_NATIVE_AD, com.ads.control.R.layout.custom_native_max_small,new AperoAdCallback(){
             @Override
@@ -191,7 +234,7 @@ Load ad native before show
 ~~~
 Populate native ad to view
 ~~~
-	AperoAd.getInstance().populateNativeAdView(MainApplovinActivity.this,nativeAd,flParentNative,shimmerFrameLayout);
+    AperoAd.getInstance().populateNativeAdView(MainApplovinActivity.this,nativeAd,flParentNative,shimmerFrameLayout);
 ~~~
 auto load and show native contains loading
 
@@ -213,14 +256,14 @@ Call load native ad
 ~~~
 Load Ad native for recyclerView
 ~~~~
-	// ad native repeating interval
-	AperoAdAdapter     adAdapter = AperoAd.getInstance().getNativeRepeatAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
+    // ad native repeating interval
+    AperoAdAdapter     adAdapter = AperoAd.getInstance().getNativeRepeatAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
                 originalAdapter, listener, 4);
-	
-	// ad native fixed in position
-    	AperoAdAdapter   adAdapter = AperoAd.getInstance().getNativeFixedPositionAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
+    
+    // ad native fixed in position
+        AperoAdAdapter   adAdapter = AperoAd.getInstance().getNativeFixedPositionAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
                 originalAdapter, listener, 4);
-	
+    
         recyclerView.setAdapter(adAdapter.getAdapter());
         adAdapter.loadAds();
 ~~~~
@@ -238,15 +281,37 @@ Get and show reward
 App
 ~~~ 
   override fun onCreate() {
-  	super.onCreate()
-  	AppOpenManager.getInstance().enableAppResume()
-	aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
-	...
+    super.onCreate()
+    AppOpenManager.getInstance().enableAppResume()
+    aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
+    ...
   }
-	
+    
 
 ~~~
-
+### Ad open app splash
+Set id ad 
+~~~
+AppOpenManager.getInstance().setSplashAdId(BuildConfig.ads_open_app);
+~~~
+Load ad app open splash at the same time as ad interstital splash:
+* param1: context,
+* param2: id ad interstital splash, 
+* param3: time out,
+* param4: time delay to show ads after ad loaded,
+* param5: true if show ad as soon as ad loaded, otherwise false,
+* param6: callback for action ad:
+~~~
+AperoAd.getInstance().loadAppOpenSplashSameTime(final Context context, String interId, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener)
+~~~
+Load ad app open splash, if false start loading ad interstital splash (params similar to same time way):
+~~~
+AperoAd.getInstance().loadAppOpenSplashAlternate(final Context context, String interId, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener)
+~~~
+Show ad open app splash:
+~~~
+AppOpenManager.getInstance().showAppOpenSplash(this, new AdCallback())
+~~~
 
 # <a id="billing_app"></a>Billing app
 ## Init Billing
@@ -273,14 +338,14 @@ Application
 ~~~
 ## Check purchase status
     //check purchase with PRODUCT_ID
-	 AppPurchase.getInstance().isPurchased(this,PRODUCT_ID);
-	 //check purchase all
-	 AppPurchase.getInstance().isPurchased(this);
+     AppPurchase.getInstance().isPurchased(this,PRODUCT_ID);
+     //check purchase all
+     AppPurchase.getInstance().isPurchased(this);
 ##  Purchase
-	 AppPurchase.getInstance().purchase(this,PRODUCT_ID);
-	 AppPurchase.getInstance().subscribe(this,SUBS_ID);
+     AppPurchase.getInstance().purchase(this,PRODUCT_ID);
+     AppPurchase.getInstance().subscribe(this,SUBS_ID);
 ## Purchase Listener
-	         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
+             AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
                  @Override
                  public void onProductPurchased(String productId,String transactionDetails) {
 
@@ -293,19 +358,22 @@ Application
              });
 
 ## Get id purchased
-	  AppPurchase.getInstance().getIdPurchased();
+      AppPurchase.getInstance().getIdPurchased();
 ## Consume purchase
-	  AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
+      AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
 ## Get price
-	  AppPurchase.getInstance().getPrice(PRODUCT_ID)
-	  AppPurchase.getInstance().getPriceSub(SUBS_ID)
+      AppPurchase.getInstance().getPrice(PRODUCT_ID)
+      AppPurchase.getInstance().getPriceSub(SUBS_ID)
+## Get owner items by user
+	AppPurchase.getInstance().getOwnerIdSubs() // for subsciptions items
+	AppPurchase.getInstance().getOwnerIdInapps() // for purchase items
 ### Show iap dialog
-	InAppDialog dialog = new InAppDialog(this);
-	dialog.setCallback(() -> {
-	     AppPurchase.getInstance().purchase(this,PRODUCT_ID);
-	    dialog.dismiss();
-	});
-	dialog.show();
+    InAppDialog dialog = new InAppDialog(this);
+    dialog.setCallback(() -> {
+         AppPurchase.getInstance().purchase(this,PRODUCT_ID);
+        dialog.dismiss();
+    });
+    dialog.show();
 
 
 
