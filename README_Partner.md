@@ -10,9 +10,16 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 - Firebase auto log tracking event, tROAS
 
 # Import Module
+Contact us for account
 ~~~
-    maven { url 'https://jitpack.io' }
-    implementation 'com.github.AperoVN:AperoModuleAds:5.6.0-alpha04'
+    maven {
+        url 'https://artifactory.apero.vn/artifactory/gradle-release/'
+            credentials {
+                username "$username"
+                password "$password"
+            }
+        }
+    implementation 'apero-inhouse:apero-ads:1.0.1'
 ~~~  
 # Summary
 * [Setup AperoAd](#setup_aperoad)
