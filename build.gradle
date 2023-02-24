@@ -33,9 +33,10 @@ allprojects {
         maven { url 'https://jitpack.io' }
         maven {
             url 'https://artifactory.apero.vn/artifactory/gradle-release/'
+            // Contact us for account
             credentials {
-                username "AperoAI"
-                password "AperoAI@123"
+                username "username"
+                password "password"
             }
         }
     }
