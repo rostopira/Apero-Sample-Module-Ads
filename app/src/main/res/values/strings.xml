@@ -16,7 +16,7 @@
     <string name="fan_banner_id">1088964791852832_1088965248519453</string>
     <string name="fan_native_banner_id">1088964791852832_1088965481852763</string>
     <string name="fan_reward_id">1088964791852832_1088965625186082</string>
-    <string name="facebook_app_id">1088964791852832</string>
+    <string name="facebook_app_id">facebook-app-id</string>
 
 
     <!-- MAX TEST ID -->
