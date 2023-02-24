@@ -48,6 +48,11 @@ public class SimpleListActivity extends AppCompatActivity {
 
         }
 
+        @Override
+        public void onAdImpression() {
+
+        }
+
     };
 
     private List<String> sampleData = new ArrayList<>();
