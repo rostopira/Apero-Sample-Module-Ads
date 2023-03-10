@@ -315,6 +315,13 @@ Load ad app open splash, if false start loading ad interstital splash (params si
 ~~~
 AperoAd.getInstance().loadAppOpenSplashAlternate(final Context context, String interId, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener)
 ~~~
+---
+**NOTE: **
+
+onInterstitalLoad() is called when app open ads splash failed but interstital splash is successed
+
+---
+~~~
 Show ad open app splash:
 ~~~
 AppOpenManager.getInstance().showAppOpenSplash(this, new AdCallback())
