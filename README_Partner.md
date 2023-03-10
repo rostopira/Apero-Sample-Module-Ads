@@ -318,7 +318,7 @@ AperoAd.getInstance().loadAppOpenSplashAlternate(final Context context, String i
 ---
 **NOTE: **
 
-onInterstitalLoad() is called when app open ads splash failed but interstital splash is successed
+onInterstitalLoad() is called when app open ads splash loaded failed but interstital splash is loaded successed
 
 ---
 ~~~
