@@ -8,14 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
+import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.config.AperoAdConfig;
 import com.ads.control.ads.AperoInitCallback;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.billing.AppPurchase;
+import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.BillingListener;
 import com.example.andmoduleads.BuildConfig;
 import com.example.andmoduleads.R;
@@ -45,8 +48,7 @@ public class SplashActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        loadSplash();
-                        loadSplash();
+                        loadAndShowInterPriority();
                     }
                 });
             }
@@ -58,6 +60,104 @@ public class SplashActivity extends AppCompatActivity {
 
     private void testCase(){
         findViewById(R.id.txtLoading).setOnClickListener(v -> startMain());
+    }
+
+    private void loadAndShowOpenAppSplash() {
+        AppOpenManager.getInstance().setSplashAdId(BuildConfig.ads_open_app);
+        AperoAd.getInstance().loadAppOpenSplashSameTime(this, BuildConfig.ad_interstitial_splash, 30000, 3000, false, new AperoAdCallback() {
+            @Override
+            public void onAdSplashReady() {
+                super.onAdSplashReady();
+                //App open ads ready
+                AppOpenManager.getInstance().showAppOpenSplash(SplashActivity.this, new AdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        startMain();
+                    }
+
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        startMain();
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        startMain();
+                    }
+                });
+            }
+
+            @Override
+            public void onAdFailedToLoad(@Nullable ApAdError adError) {
+                super.onAdFailedToLoad(adError);
+                startMain();
+            }
+
+            @Override
+            public void onNextAction() {
+                super.onNextAction();
+                startMain();
+            }
+
+            @Override
+            public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                //App open ads failed, inter ads loaded
+                AperoAd.getInstance().onShowSplash(SplashActivity.this, new AperoAdCallback() {
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        startMain();
+                    }
+                });
+            }
+        });
+    }
+
+    private void loadAndShowInterPriority() {
+        AperoAd.getInstance().loadSplashInterPrioritySameTime(
+                this,
+                BuildConfig.ads_inter_priority,
+                BuildConfig.ad_interstitial_splash,
+                30000,
+                3000,
+                false,
+                new AperoAdCallback() {
+                    @Override
+                    public void onAdSplashReady() {
+                        super.onAdSplashReady();
+                        //Ads Inter priority ready
+                        AperoAd.getInstance().onShowSplashPriority(SplashActivity.this, new AperoAdCallback() {
+                            @Override
+                            public void onNextAction() {
+                                super.onNextAction();
+                                startMain();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        startMain();
+                    }
+
+                    @Override
+                    public void onNormalInterSplashLoaded() {
+                        super.onNormalInterSplashLoaded();
+                        //ads inter priority failed, ads inter normal loaded
+                        AperoAd.getInstance().onShowSplash(SplashActivity.this, new AperoAdCallback() {
+                            @Override
+                            public void onNextAction() {
+                                super.onNextAction();
+                                startMain();
+                            }
+                        });
+                    }
+                });
     }
 
 
