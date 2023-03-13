@@ -299,7 +299,7 @@ App
 ### Ad open app splash
 Set id ad 
 ~~~
-AppOpenManager.getInstance().setSplashAdId(BuildConfig.ads_open_app);
+  AppOpenManager.getInstance().setSplashAdId(BuildConfig.ads_open_app);
 ~~~
 Load ad app open splash at the same time as ad interstital splash:
 * param1: context,
@@ -309,22 +309,43 @@ Load ad app open splash at the same time as ad interstital splash:
 * param5: true if show ad as soon as ad loaded, otherwise false,
 * param6: callback for action ad:
 ~~~
-AperoAd.getInstance().loadAppOpenSplashSameTime(final Context context, String interId, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener)
+  AperoAd.getInstance().loadAppOpenSplashSameTime(final Context context, String interId, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener)
 ~~~
 Load ad app open splash, if false start loading ad interstital splash (params similar to same time way):
 ~~~
-AperoAd.getInstance().loadAppOpenSplashAlternate(final Context context, String interId, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener)
+  AperoAd.getInstance().loadAppOpenSplashAlternate(final Context context, String interId, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener)
 ~~~
----
-**NOTE: **
 
-onInterstitalLoad() is called when app open ads splash loaded failed but interstital splash is loaded successed
+*NOTE: onInterstitalLoad() is called when app open ads splash loaded unsuccessfully but interstital splash is loaded successfully*
 
----
-~~~
 Show ad open app splash:
 ~~~
-AppOpenManager.getInstance().showAppOpenSplash(this, new AdCallback())
+  AppOpenManager.getInstance().showAppOpenSplash(this, new AdCallback())
+~~~
+Check show app open ad splash when failed
+~~~
+  AppOpenManager.getInstance().onCheckShowAppOpenSplashWhenFail(this, new AdCallback())
+~~~
+
+### Ads interstital splash priority
+Load interstital splash priority at the same time with interstital splash default:
+~~~
+  AperoAd.getInstance().loadSplashInterPrioritySameTime(Context context, String interIdPriority, String interIdDefault, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener);
+~~~
+ Load interstital splash priority, if false start loading ad interstital splash default:
+~~~
+ AperoAd.getInstance().loadSplashInterPriorityAlternate(Context context, String interIdPriority, String interIdDefault, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener);
+~~~
+
+*NOTE: onNormalInterSplashLoaded() is called when interstital splash priority loaded unsuccessfully but interstital splash default is loaded successfully*
+
+Show ads interstital splash priority
+~~~
+  AperoAd.getInstance().onShowSplashPriority(Context context, AperoAdCallback adCallback)
+~~~
+Check show interstital splash priority when failed
+~~~
+  AperoAd.getInstance().onCheckShowSplashPriorityWhenFail(Context context, AperoAdCallback adCallback)
 ~~~
 
 # <a id="billing_app"></a>Billing app
