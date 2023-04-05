@@ -57,24 +57,21 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 5000);
 
+        if (SharePreferenceUtils.isFirstOpenApp(SplashActivity.this)) {
+            languageFirstOpen = new LanguageFirstOpen(this);
+        }
+
         loadAndShowOpenAppSplash();
 
         AppPurchase.getInstance().setEventConsumePurchaseTest(findViewById(R.id.txtLoading));
 
         createLanguages();
 
-        languageFirstOpen = new LanguageFirstOpen(this);
-
-        languageFirstOpen.startLanguageFirstOpen((s, b) -> {
-            SharePreferenceUtils.setFirstOpenApp(this,false);
-            startMain();
-        });
-
 
 //        testCase();
     }
 
-    private void createLanguages(){
+    private void createLanguages() {
         List<Language> list = new ArrayList<>();
         list.add(new Language("en", getString(R.string.language_english), R.drawable.ic_language_en, false));
         list.add(new Language("hi", getString(R.string.language_hindi), R.drawable.ic_language_hi, false));
@@ -84,13 +81,13 @@ public class SplashActivity extends AppCompatActivity {
         LanguageFirstOpen.Companion.setSizeLayoutLoadingAdNative(300f);// use dp
     }
 
-    private void loadNativeAdsFirstLanguageOpen(){
+    private void loadNativeAdsFirstLanguageOpen() {
         AperoAd.getInstance().loadNativePrioritySameTime(
                 this,
                 BuildConfig.ad_native_high_floor, // native high floor
                 BuildConfig.ad_native, // native normal
                 com.ltl.apero.languageopen.R.layout.view_native_ads_language_first,
-                new AperoAdCallback(){
+                new AperoAdCallback() {
                     @Override
                     public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
                         super.onNativeAdLoaded(nativeAd);
@@ -105,7 +102,7 @@ public class SplashActivity extends AppCompatActivity {
         );
     }
 
-    private void testCase(){
+    private void testCase() {
         findViewById(R.id.txtLoading).setOnClickListener(v -> startMain());
     }
 
@@ -120,12 +117,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
-                        if (SharePreferenceUtils.isFirstOpenApp(SplashActivity.this)) {
-                            loadNativeAdsFirstLanguageOpen();
-                        }
-                        else {
-                            startMain();
-                        }
+                        startMain();
                     }
 
                     @Override
@@ -298,27 +290,35 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startMain() {
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        if (!SharePreferenceUtils.isFirstOpenApp(this)) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        } else {
+            loadNativeAdsFirstLanguageOpen();
+            languageFirstOpen.startLanguageFirstOpen((s, b) -> {
+                SharePreferenceUtils.setFirstOpenApp(this, false);
+                startMain();
+            });
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "Splash onPause: " );
+        Log.e(TAG, "Splash onPause: ");
         AperoAd.getInstance().onCheckShowSplashWhenFail(this, adCallback, 1000);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "Splash onPause: " );
+        Log.e(TAG, "Splash onPause: ");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e(TAG, "Splash onStop: " );
+        Log.e(TAG, "Splash onStop: ");
     }
 
     @Override
