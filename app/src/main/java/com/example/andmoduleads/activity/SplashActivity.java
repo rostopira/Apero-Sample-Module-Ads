@@ -63,13 +63,7 @@ public class SplashActivity extends AppCompatActivity {
 
         createLanguages();
 
-        if (SharePreferenceUtils.isFirstOpenApp(this)) {
-            languageFirstOpen = new LanguageFirstOpen(this);
-            loadNativeAdsFirstLanguageOpen();
-        }
-        else {
-            startMain();
-        }
+        languageFirstOpen = new LanguageFirstOpen(this);
 
         languageFirstOpen.startLanguageFirstOpen((s, b) -> {
             SharePreferenceUtils.setFirstOpenApp(this,false);
@@ -126,19 +120,24 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
-                       // startMain();
+                        if (SharePreferenceUtils.isFirstOpenApp(SplashActivity.this)) {
+                            loadNativeAdsFirstLanguageOpen();
+                        }
+                        else {
+                            startMain();
+                        }
                     }
 
                     @Override
                     public void onNextAction() {
                         super.onNextAction();
-                       // startMain();
+                        startMain();
                     }
 
                     @Override
                     public void onAdFailedToShow(@Nullable AdError adError) {
                         super.onAdFailedToShow(adError);
-                        //startMain();
+                        startMain();
                     }
                 });
             }
@@ -146,13 +145,13 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAdFailedToLoad(@Nullable ApAdError adError) {
                 super.onAdFailedToLoad(adError);
-                //startMain();
+                startMain();
             }
 
             @Override
             public void onNextAction() {
                 super.onNextAction();
-               // startMain();
+                startMain();
             }
 
             @Override
@@ -163,7 +162,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onNextAction() {
                         super.onNextAction();
-                       // startMain();
+                        startMain();
                     }
                 });
             }
