@@ -38,7 +38,7 @@ android {
             buildConfigField "String", "ads_open_app", "\"ca-app-pub-3940256099942544/3419835294\""
             buildConfigField "String", "ads_inter_priority", "\"ca-app-pub-3940256099942544/8691691433\""
             buildConfigField "Boolean", "env_dev", "true"
-            buildConfigField "String", "ad_native_high_floor", "\"ca-app-pub-3940256099942544/1044960115\""
+            buildConfigField "String", "ad_native_priority", "\"ca-app-pub-3940256099942544/1044960115\""
 
         }
         appProd {
