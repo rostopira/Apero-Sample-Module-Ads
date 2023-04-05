@@ -84,8 +84,8 @@ public class SplashActivity extends AppCompatActivity {
     private void loadNativeAdsFirstLanguageOpen() {
         AperoAd.getInstance().loadNativePrioritySameTime(
                 this,
-                BuildConfig.ad_native_high_floor, // native high floor
-                BuildConfig.ad_native, // native normal
+                BuildConfig.ad_native_priority,
+                BuildConfig.ad_native,
                 com.ltl.apero.languageopen.R.layout.view_native_ads_language_first,
                 new AperoAdCallback() {
                     @Override
