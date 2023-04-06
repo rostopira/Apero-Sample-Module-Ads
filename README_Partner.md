@@ -19,13 +19,13 @@ Contact us for account
                 password "$password"
             }
         }
-    implementation 'apero-inhouse:apero-ads:1.0.1'
+    implementation 'apero-inhouse:apero-ads:1.0.3-alpha07'
 ~~~  
 # Summary
 * [Setup AperoAd](#setup_aperoad)
-    * [Setup id ads](#set_up_ads)
-    * [Config ads](#config_ads)
-    * [Ads Formats](#ads_formats)
+  * [Setup id ads](#set_up_ads)
+  * [Config ads](#config_ads)
+  * [Ads Formats](#ads_formats)
 
 * [Billing App](#billing_app)
 * [Ads rule](#ads_rule)
@@ -80,11 +80,11 @@ Create class Application
 
 Configure your mediation here. using PROVIDER_ADMOB or PROVIDER_MAX
 
-*** Note: 
-- Don't use id ad test for production environment 
+*** Note:
+- Don't use id ad test for production environment
 - Environment:
-    - ENVIRONMENT_DEVELOP: for test ads and billing.
-    - ENVIRONMENT_PRODUCTION: for prdouctions ads and billing.
+  - ENVIRONMENT_DEVELOP: for test ads and billing.
+  - ENVIRONMENT_PRODUCTION: for prdouctions ads and billing.
 ~~~
 class App : AdsMultiDexApplication(){
     @Override
@@ -238,6 +238,34 @@ Load ad native before show
                //save or show native 
             }
         });
+        
+        // Load priority native and default native ad by sametime:
+        AperoAd.getInstance().loadNativePrioritySameTime(
+            this,
+            ID_NATIVE_PRIORITY,
+            ID_NATIVE_NORMAL,
+            R.layout.custom_native_admod_medium_rate,
+            object : AperoAdCallback() {
+              override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                  super.onNativeAdLoaded(nativeAd)
+                  //save or show native 
+              }
+            }
+        )
+	    
+    	// Load priority native and default native ad by alternate:
+        AperoAd.getInstance().loadNativePriorityAlternate(
+            this,
+            ID_NATIVE_PRIORITY,
+            ID_NATIVE_NORMAL,
+            R.layout.custom_native_admod_medium_rate,
+            object : AperoAdCallback() {
+              override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                  super.onNativeAdLoaded(nativeAd)
+                  //save or show native 
+              }
+            }
+        )
 ~~~
 Populate native ad to view
 ~~~
@@ -297,13 +325,13 @@ App
 
 ~~~
 ### Ad open app splash
-Set id ad 
+Set id ad
 ~~~
   AppOpenManager.getInstance().setSplashAdId(BuildConfig.ads_open_app);
 ~~~
 Load ad app open splash at the same time as ad interstital splash:
 * param1: context,
-* param2: id ad interstital splash, 
+* param2: id ad interstital splash,
 * param3: time out,
 * param4: time delay to show ads after ad loaded,
 * param5: true if show ad as soon as ad loaded, otherwise false,
@@ -332,7 +360,7 @@ Load interstital splash priority at the same time with interstital splash defaul
 ~~~
   AperoAd.getInstance().loadSplashInterPrioritySameTime(Context context, String interIdPriority, String interIdDefault, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener);
 ~~~
- Load interstital splash priority, if false start loading ad interstital splash default:
+Load interstital splash priority, if false start loading ad interstital splash default:
 ~~~
  AperoAd.getInstance().loadSplashInterPriorityAlternate(Context context, String interIdPriority, String interIdDefault, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener);
 ~~~
