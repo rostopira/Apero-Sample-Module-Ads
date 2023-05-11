@@ -39,6 +39,7 @@ android {
             buildConfigField "String", "ads_inter_priority", "\"ca-app-pub-3940256099942544/8691691433\""
             buildConfigField "Boolean", "env_dev", "true"
             buildConfigField "String", "ad_native_priority", "\"ca-app-pub-3940256099942544/1044960115\""
+            buildConfigField "String", "ads_inter_medium", "\"ca-app-pub-3940256099942544/8691691433\""
 
         }
         appProd {
@@ -53,6 +54,7 @@ android {
             buildConfigField "String", "ad_native", "\"ca-app-pub-3940256099942544/3419835294\""
             buildConfigField "String", "ads_open_app", "\"ca-app-pub-3940256099942544/3419835294\""
             buildConfigField "String", "ads_inter_priority", "\"ca-app-pub-3940256099942544/8691691433\""
+            buildConfigField "String", "ads_inter_medium", "\"ca-app-pub-3940256099942544/8691691433\""
             buildConfigField "Boolean", "env_dev", "false"
         }
     }
@@ -85,7 +87,7 @@ dependencies {
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     //implementation 'com.github.AperoVN:AperoModuleAds:5.5.3-alpha3'
-    implementation 'apero-inhouse:apero-ads:1.0.3-alpha07'
+    implementation 'apero-inhouse:apero-ads:1.0.6-alpha05'
     implementation 'apero:language.first.open:1.1.5@aar'
 }
 repositories {
