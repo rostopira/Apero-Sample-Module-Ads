@@ -52,7 +52,7 @@ public class MyApplication extends AdsMultiDexApplication {
         aperoAdConfig = new AperoAdConfig(this, AperoAdConfig.PROVIDER_ADMOB, environment);
 
         // Optional: setup Adjust event
-        AdjustConfig adjustConfig = new AdjustConfig(true,ADJUST_TOKEN);
+        AdjustConfig adjustConfig = new AdjustConfig(ADJUST_TOKEN);
         adjustConfig.setEventAdImpression(EVENT_AD_IMPRESSION_ADJUST);
         adjustConfig.setEventNamePurchase(EVENT_PURCHASE_ADJUST);
         aperoAdConfig.setAdjustConfig(adjustConfig);

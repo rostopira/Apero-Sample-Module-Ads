@@ -376,6 +376,38 @@ Check show interstital splash priority when failed
   AperoAd.getInstance().onCheckShowSplashPriorityWhenFail(Context context, AperoAdCallback adCallback)
 ~~~
 
+### Interstitial Splash Medium
+Load samtime
+~~~
+   AperoAd.getInstance().loadSplashInterPriority3SameTime(context,
+                id_ads_inter_priority,
+                id_ads_inter_medium,
+                id_ads_inter_normal,
+                timeout,
+                timedelay,
+                false,
+                AperoAdCallback);
+~~~
+Load alternate
+~~~
+  AperoAd.getInstance().loadSplashInterPriority3Alternate(context,
+                id_ads_inter_priority,
+                id_ads_inter_medium,
+                id_ads_inter_normal,
+                timeout,
+                timedelay,
+                false,
+                AperoAdCallback);
+~~~
+Show ad
+~~~
+  AperoAd.getInstance().onShowSplashPriority3(activity, AperoAdCallback);
+~~~
+when hide app -> reopen app will be loaded forever, we will use this function in onResume
+~~~
+  AperoAd.getInstance().onCheckShowSplashPriority3WhenFail(activity, AperoAdCallback, timedelay);
+~~~
+
 # <a id="billing_app"></a>Billing app
 ## Init Billing
 Application
