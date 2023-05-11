@@ -386,7 +386,7 @@ Load samtime
                 timeout,
                 timedelay,
                 false,
-                adCallback);
+                AperoAdCallback);
 ~~~
 Load alternate
 ~~~
@@ -397,15 +397,15 @@ Load alternate
                 timeout,
                 timedelay,
                 false,
-                adCallback);
+                AperoAdCallback);
 ~~~
 Show ad
 ~~~
-  AperoAd.getInstance().onShowSplashPriority3(activity, adCallback);
+  AperoAd.getInstance().onShowSplashPriority3(activity, AperoAdCallback);
 ~~~
 when hide app -> reopen app will be loaded forever, we will use this function in onResume
 ~~~
-  AperoAd.getInstance().onCheckShowSplashPriority3WhenFail(activity, adCallback, timedelay);
+  AperoAd.getInstance().onCheckShowSplashPriority3WhenFail(activity, AperoAdCallback, timedelay);
 ~~~
 
 # <a id="billing_app"></a>Billing app
