@@ -10,6 +10,7 @@ import com.ads.control.admob.AppOpenManager;
 import com.ads.control.config.AppsflyerConfig;
 import com.example.andmoduleads.activity.MainActivity;
 import com.example.andmoduleads.activity.SplashActivity;
+import com.example.andmoduleads.utils.NetworkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class MyApplication extends AdsMultiDexApplication {
         context = this;
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admob.getInstance().setNumToShowAds(0);
+        NetworkUtil.initNetwork(this);
 
         storageCommon = new StorageCommon();
         initBilling();
