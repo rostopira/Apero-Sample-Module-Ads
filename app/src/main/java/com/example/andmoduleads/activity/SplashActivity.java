@@ -20,9 +20,11 @@ import com.ads.control.config.AperoAdConfig;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.BillingListener;
 import com.example.andmoduleads.BuildConfig;
+import com.example.andmoduleads.MyApplication;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.SharePreferenceUtils;
 import com.example.andmoduleads.utils.Constant;
+import com.example.andmoduleads.utils.NetworkUtil;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.ltl.apero.languageopen.Language;
@@ -36,7 +38,6 @@ public class SplashActivity extends AppCompatActivity {
     private static final String TAG = "SplashActivity";
     private List<String> list = new ArrayList<>();
     private String idAdSplash;
-    LanguageFirstOpen languageFirstOpen;
     private boolean isFirstRunApp = true;
     private final int TYPE_INTER_HIGH = 0;
     private final int TYPE_INTER_MEDIUM = 1;
@@ -57,22 +58,19 @@ public class SplashActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        loadInterSplash3();
+                        if (NetworkUtil.isOnline()) {
+                            loadInterSplash3();
+                        } else {
+                            startMain();
+                        }
                     }
                 });
             }
         }, 5000);
 
-        if (SharePreferenceUtils.isFirstOpenApp(SplashActivity.this)) {
-            languageFirstOpen = new LanguageFirstOpen(this);
-        }
-
         //loadAndShowOpenAppSplash();
 
         AppPurchase.getInstance().setEventConsumePurchaseTest(findViewById(R.id.txtLoading));
-
-        createLanguages();
-
 
 //        testCase();
     }
@@ -88,6 +86,15 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void loadNativeAdsFirstLanguageOpen() {
+        if (MyApplication.getApplication().getStorageCommon().nativeAdsLanguage.getValue() == null
+                && !AppPurchase.getInstance().isPurchased()) {
+            loadNativeLanguageHigh();
+            /*use native medium then use this function*/
+            /*loadNativeLanguage3();*/
+        }
+    }
+
+    private void loadNativeLanguageHigh(){
         AperoAd.getInstance().loadNativePrioritySameTime(
                 this,
                 BuildConfig.ad_native_priority,
@@ -97,12 +104,40 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
                         super.onNativeAdLoaded(nativeAd);
-                        LanguageFirstOpen.Companion.getNativeAdsLanguage().postValue(nativeAd);
+                        MyApplication.getApplication().getStorageCommon()
+                                .nativeAdsLanguage.postValue(nativeAd);
                     }
 
                     @Override
                     public void onAdFailedToLoad(@Nullable ApAdError adError) {
                         super.onAdFailedToLoad(adError);
+                        MyApplication.getApplication().getStorageCommon()
+                                .nativeAdsLanguage.postValue(null);
+                    }
+                }
+        );
+    }
+
+    private void loadNativeLanguage3() {
+        AperoAd.getInstance().loadNative3SameTime(
+                this,
+                BuildConfig.ad_native_priority,
+                BuildConfig.ad_native_medium,
+                BuildConfig.ad_native,
+                R.layout.custom_native_ads_language_first,
+                new AperoAdCallback() {
+                    @Override
+                    public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
+                        super.onNativeAdLoaded(nativeAd);
+                        MyApplication.getApplication().getStorageCommon()
+                                .nativeAdsLanguage.postValue(nativeAd);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable ApAdError adError) {
+                        super.onAdFailedToLoad(adError);
+                        MyApplication.getApplication().getStorageCommon()
+                                .nativeAdsLanguage.postValue(null);
                     }
                 }
         );
@@ -177,6 +212,7 @@ public class SplashActivity extends AppCompatActivity {
                 loadInterSplash3Alternate();
                 break;
             default:
+                /*if request is only inter splash high then just call this function*/
                 loadAndShowInterPriority();
                 break;
         }
@@ -319,7 +355,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onNextAction() {
                 super.onNextAction();
-                startMain();
+                //startMain();
                 Log.e(TAG, "onNextAction: ");
             }
         });
@@ -458,14 +494,11 @@ public class SplashActivity extends AppCompatActivity {
     private void startMain() {
         if (!SharePreferenceUtils.isFirstOpenApp(this)) {
             startActivity(new Intent(this, MainActivity.class));
-            finish();
         } else {
             loadNativeAdsFirstLanguageOpen();
-            languageFirstOpen.startLanguageFirstOpen((s, b) -> {
-                SharePreferenceUtils.setFirstOpenApp(this, false);
-                startMain();
-            });
+            startActivity(new Intent(SplashActivity.this, LanguageFirstOpenActivity.class));
         }
+        finish();
     }
 
     @Override

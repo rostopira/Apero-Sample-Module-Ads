@@ -1,5 +1,9 @@
 package com.example.andmoduleads;
 
-public class StorageCommon {
+import androidx.lifecycle.MutableLiveData;
 
+import com.ads.control.ads.wrapper.ApNativeAd;
+
+public class StorageCommon {
+    public MutableLiveData<ApNativeAd> nativeAdsLanguage = new MutableLiveData<>();
 }
