@@ -19,7 +19,13 @@ Contact us for account
                 password "$password"
             }
         }
-    implementation 'apero-inhouse:apero-ads:1.0.3-alpha07'
+    maven {
+        url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
+    }
+    maven {
+        url 'https://artifact.bytedance.com/repository/pangle'
+    }
+    implementation 'apero-inhouse:apero-ads:1.0.6-alpha07'
 ~~~  
 # Summary
 * [Setup AperoAd](#setup_aperoad)
@@ -57,7 +63,7 @@ We recommend you to setup 2 environments for your project, and only use test id 
            }
       }
 ~~~
-AndroidManiafest.xml
+AndroidManifest.xml
 ~~~
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -75,6 +81,8 @@ AndroidManiafest.xml
             android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
             android:value="true" />
 ~~~
+* NOTE : do not set applicationId containing ".example" to avoid the case that id ads no fill
+
 ## <a id="config_ads"></a>Config ads
 Create class Application
 
@@ -237,6 +245,12 @@ Load ad native before show
                 super.onNativeAdLoaded(nativeAd);
                //save or show native 
             }
+            
+            @Override
+            public void onAdFailedToLoad(@Nullable ApAdError adError) {
+                super.onAdFailedToLoad(adError);
+                // gone layout ad native
+            }
         });
         
         // Load priority native and default native ad by sametime:
@@ -250,6 +264,11 @@ Load ad native before show
                   super.onNativeAdLoaded(nativeAd)
                   //save or show native 
               }
+              
+              override fun onAdFailedToLoad(adError: ApAdError?) {
+                  super.onAdFailedToLoad(adError)   
+                  // gone layout ad native 
+              }
             }
         )
 	    
@@ -260,31 +279,211 @@ Load ad native before show
             ID_NATIVE_NORMAL,
             R.layout.custom_native_admod_medium_rate,
             object : AperoAdCallback() {
-              override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+               override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
                   super.onNativeAdLoaded(nativeAd)
                   //save or show native 
+               }
+              
+               override fun onAdFailedToLoad(adError: ApAdError?) {
+                  super.onAdFailedToLoad(adError)   
+                  // gone layout ad native 
+               }
+            }
+        )
+        
+        // Load priority native, medium native and default native ad by sametime:
+        AperoAd.getInstance().loadNative3SameTime(
+            this,
+            ID_NATIVE_PRIORITY,
+            ID_NATIVE_MEDIUM,
+            ID_NATIVE_NORMAL,
+            R.layout.custom_native_ad,
+            object : AperoAdCallback() {
+               override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                  super.onNativeAdLoaded(nativeAd)
+                  //save or show native 
+               }
+              
+               override fun onAdFailedToLoad(adError: ApAdError?) {
+                  super.onAdFailedToLoad(adError)   
+                  // gone layout ad native 
               }
             }
         )
+        
+        // Load priority native, medium native and default native ad by alternate:
+        AperoAd.getInstance().loadNative3Alternate(
+            this,
+            ID_NATIVE_PRIORITY,
+            ID_NATIVE_MEDIUM,
+            ID_NATIVE_NORMAL,
+            R.layout.custom_native_ad,
+            object : AperoAdCallback() {
+               override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                  super.onNativeAdLoaded(nativeAd)
+                  //save or show native 
+               }
+              
+               override fun onAdFailedToLoad(adError: ApAdError?) {
+                  super.onAdFailedToLoad(adError)   
+                  // gone layout ad native 
+               }
+            }
+        )
 ~~~
+
 Populate native ad to view
 ~~~
     AperoAd.getInstance().populateNativeAdView(MainApplovinActivity.this,nativeAd,flParentNative,shimmerFrameLayout);
 ~~~
-auto load and show native contains loading
 
-in layout XML
+Layout native sample
 ~~~
-      <com.ads.control.ads.nativeAds.AperoNativeAdView
-        android:id="@+id/aperoNativeAds"
+    <?xml version="1.0" encoding="utf-8"?>
+    <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp">
+    
+        <RelativeLayout
+            android:id="@+id/ad_unit_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#F4F4F4"
+            android:orientation="vertical">
+    
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+    
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="25dip"
+                    android:paddingTop="8dip"
+                    android:paddingEnd="8dip"
+                    android:paddingBottom="8dip">
+    
+                    <ImageView
+                        android:id="@+id/ad_app_icon"
+                        android:layout_width="35dip"
+                        android:layout_height="35dip"
+                        android:adjustViewBounds="true"
+                        android:src="@color/colorPrimary" />
+    
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dip"
+                        android:orientation="vertical">
+    
+                        <TextView
+                            android:id="@+id/ad_headline"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:text="sdsdsdsdsd"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_10sdp" />
+    
+    
+                        <TextView
+                            android:id="@+id/ad_advertiser"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:lines="2"
+                            android:text="sdsdsdsdsdádasd"
+                            android:textColor="@color/colorMain"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+    
+    
+                    </LinearLayout>
+    
+                </LinearLayout>
+    
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp">
+    
+                    <TextView
+                        android:id="@+id/ad_body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ádas"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+    
+                </LinearLayout>
+    
+                <com.google.android.gms.ads.nativead.MediaView
+                    android:id="@+id/ad_media"
+                    android:layout_width="fill_parent"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_5sdp" />
+    
+                <Button
+                    android:id="@+id/ad_call_to_action"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:text="Install"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+    
+            <TextView
+                style="@style/AppTheme.Ads"
+                android:background="@drawable/border_radius_ad" />
+    
+        </RelativeLayout>
+    
+    </com.google.android.gms.ads.nativead.NativeAdView>
+~~~
+
+Layout container native ad
+~~~
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
-        android:background="@drawable/bg_card_ads"
-        app:layoutCustomNativeAd="@layout/custom_native_admod_medium_rate"
-        app:layoutLoading="@layout/loading_native_medium"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
+        
+        ...
+
+        <FrameLayout
+            android:id="@+id/layoutAdNative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include
+                android:id="@+id/layoutShimmer"
+                layout="@layout/layout_loading_ads_native" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 ~~~
+
+Layout loading ad native
+~~~
+    The layout is the same as that of the native ad layout but will use ShimmerFrameLayout instead of NativeAdView to create the loading animation
+~~~
+
 Call load native ad
 ~~~
  aperoNativeAdView.loadNativeAd(this, idNative);
@@ -313,12 +512,17 @@ Get and show reward
 });
 ~~~
 ### Ad resume
-App
+In Application
 ~~~ 
   override fun onCreate() {
     super.onCreate()
     AppOpenManager.getInstance().enableAppResume()
-    aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
+    // normal
+    aperoAdConfig.setIdAdResume(BuildConfig.ad_resume_normal);
+    // medium
+    aperoAdConfig.setIdAdResumeMedium(BuildConfig.ad_resume_medium);
+    // high
+    aperoAdConfig.setIdAdResumeHigh(BuildConfig.ad_resume_high);
     ...
   }
     
@@ -350,7 +554,7 @@ Show ad open app splash:
 ~~~
   AppOpenManager.getInstance().showAppOpenSplash(this, new AdCallback())
 ~~~
-Check show app open ad splash when failed
+Check show app open ad splash when failed ( in onResume )
 ~~~
   AppOpenManager.getInstance().onCheckShowAppOpenSplashWhenFail(this, new AdCallback())
 ~~~
@@ -371,13 +575,13 @@ Show ads interstital splash priority
 ~~~
   AperoAd.getInstance().onShowSplashPriority(Context context, AperoAdCallback adCallback)
 ~~~
-Check show interstital splash priority when failed
+Check show interstital splash priority when failed  ( in onResume )
 ~~~
   AperoAd.getInstance().onCheckShowSplashPriorityWhenFail(Context context, AperoAdCallback adCallback)
 ~~~
 
-### Interstitial Splash Medium
-Load samtime
+### Interstitial Splash 3 ( Update medium )
+Load sametime
 ~~~
    AperoAd.getInstance().loadSplashInterPriority3SameTime(context,
                 id_ads_inter_priority,
@@ -407,6 +611,22 @@ when hide app -> reopen app will be loaded forever, we will use this function in
 ~~~
   AperoAd.getInstance().onCheckShowSplashPriority3WhenFail(activity, AperoAdCallback, timedelay);
 ~~~
+
+### Ad open app splash 3 ( update medium )
+Set id ad
+~~~
+  AppOpenManager.getInstance().setSplashAdId(BuildConfig.ads_open_app_high);
+  AppOpenManager.getInstance().setSplashAdId(BuildConfig.ads_open_app_medium);
+~~~
+Load sametime
+~~~
+  AperoAd.getInstance().loadAppOpenSplash3SameTime(context, id_inter, timeOut, timeDelay, showSplashIfReady, AperoAdCallback);
+~~~
+Check show app open ad splash when failed ( in onResume )
+~~~
+  AperoAd.getInstance().onCheckShowedAppOpen3WhenFail(context, timeDelay, showSplashIfReady, AperoAdCallback)
+~~~
+* NOTE : showSplashIfReady = true
 
 # <a id="billing_app"></a>Billing app
 ## Init Billing
