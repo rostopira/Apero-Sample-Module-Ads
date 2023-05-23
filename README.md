@@ -456,119 +456,128 @@ Layout native admob sample
 
 Layout native max sample
 ~~~
-<?xml version="1.0" encoding="utf-8"?>
-    <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_5sdp">
+    <?xml version="1.0" encoding="utf-8"?>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     
-        <RelativeLayout
-            android:id="@+id/ad_unit_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#F4F4F4"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
     
             <LinearLayout
+                android:id="@+id/linearLayout3"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                android:padding="8dip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3">
+    
+                <ImageView
+                    android:id="@+id/ad_app_icon"
+                    android:layout_width="35dip"
+                    android:layout_height="35dip"
+                    android:adjustViewBounds="true"
+                    android:src="@color/colorPrimary" />
     
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingStart="25dip"
-                    android:paddingTop="8dip"
-                    android:paddingEnd="8dip"
-                    android:paddingBottom="8dip">
-    
-                    <ImageView
-                        android:id="@+id/ad_app_icon"
-                        android:layout_width="35dip"
-                        android:layout_height="35dip"
-                        android:adjustViewBounds="true"
-                        android:src="@color/colorPrimary" />
-    
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dip"
-                        android:orientation="vertical">
-    
-                        <TextView
-                            android:id="@+id/ad_headline"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:maxLines="2"
-                            android:text="sdsdsdsdsd"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/_10sdp" />
-    
-    
-                        <TextView
-                            android:id="@+id/ad_advertiser"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:lines="2"
-                            android:text="sdsdsdsdsdádasd"
-                            android:textColor="@color/colorMain"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-    
-    
-                    </LinearLayout>
-    
-                </LinearLayout>
-    
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="5dp">
+                    android:layout_marginLeft="5dip"
+                    android:orientation="vertical">
     
                     <TextView
-                        android:id="@+id/ad_body"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/ad_headline"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="ádas"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="@string/offline_notification_text"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_14sdp" />
+    
+                      <TextView
+                          android:id="@+id/ad_advertiser"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:gravity="bottom"
+                          android:lines="1"
+                          android:text="@string/bottom_sheet_behavior"
+                          android:textColor="@color/colorAds"
+                          android:textSize="@dimen/_8sdp"
+                          android:textStyle="bold" />
     
                 </LinearLayout>
-    
-                <FrameLayout
-                    android:id="@+id/ad_media"
-                    android:layout_width="fill_parent"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/_5sdp" />
-    
-                <Button
-                    android:id="@+id/ad_call_to_action"
-                    android:layout_width="fill_parent"
-                    android:layout_height="@dimen/_35sdp"
-                    android:layout_marginHorizontal="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginBottom="@dimen/_10sdp"
-                    android:gravity="center"
-                    android:text="Install"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/_12sdp"
-                    android:textStyle="bold" />
             </LinearLayout>
     
             <TextView
+                android:id="@+id/ad_body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="3"
+                android:text="@string/appbar_scrolling_view_behavior"
+                android:textSize="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
+                app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+    
+            <FrameLayout
+                android:id="@+id/ad_media"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:minWidth="120dp"
+                android:minHeight="120dp"
+                app:layout_constraintBottom_toTopOf="@+id/ad_call_to_action"
+                app:layout_constraintEnd_toEndOf="@+id/ad_body"
+                app:layout_constraintStart_toStartOf="@+id/ad_body"
+                app:layout_constraintTop_toBottomOf="@+id/ad_body" />
+    
+            <Button
+                android:id="@+id/ad_call_to_action"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ads_bg_lib"
+                android:gravity="center"
+                android:text="Cài Đặt"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/ad_body"
+                app:layout_constraintStart_toStartOf="@+id/ad_body" />
+    
+            <FrameLayout
+                android:id="@+id/ad_options_view"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/ad_advertiser"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/ad_headline"
+                app:layout_constraintTop_toTopOf="parent" />
+                
+            <TextView
+                android:id="@+id/textView3"
                 style="@style/AppTheme.Ads"
-                android:background="@drawable/border_radius_ad" />
-    
-        </RelativeLayout>
-    
-    </com.google.android.gms.ads.nativead.NativeAdView>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 ~~~
 
 Layout container native ad
