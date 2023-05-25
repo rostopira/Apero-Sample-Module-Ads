@@ -30,6 +30,7 @@ android {
             //use id test when dev
             manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713"]
             buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ad_interstitial", "\"ca-app-pub-3940256099942544/1033173712\""
             buildConfigField "String", "ad_banner", "\"ca-app-pub-3940256099942544/6300978111\""
             buildConfigField "String", "ad_reward", "\"ca-app-pub-3940256099942544/5224354917\""
             buildConfigField "String", "ad_reward_inter", "\"ca-app-pub-3940256099942544/5354046379\""
@@ -47,6 +48,8 @@ android {
             //add your id ad here
             manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713"]
             buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ad_interstitial", "\"ca-app-pub-3940256099942544/1033173712\""
+
             buildConfigField "String", "ad_banner", "\"ca-app-pub-3940256099942544/6300978111\""
             buildConfigField "String", "ad_reward", "\"ca-app-pub-3940256099942544/5224354917\""
             buildConfigField "String", "ad_reward_inter", "\"ca-app-pub-3940256099942544/5354046379\""
@@ -90,7 +93,7 @@ dependencies {
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     //implementation 'com.github.AperoVN:AperoModuleAds:5.5.3-alpha3'
-    implementation 'apero-inhouse:apero-ads:1.0.6-alpha06'
+    implementation 'apero-inhouse:apero-ads:1.0.6-alpha07'
     implementation 'apero:language.first.open:1.1.5@aar'
 }
 repositories {

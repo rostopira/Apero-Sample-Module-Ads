@@ -26,10 +26,14 @@ import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.event.AperoAdjust;
+import com.ads.control.event.AperoLogEventManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
+import com.example.andmoduleads.AdsInterCallBack;
+import com.example.andmoduleads.AdsInterCommon;
 import com.example.andmoduleads.BuildConfig;
+import com.example.andmoduleads.MyApplication;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -196,6 +200,71 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        boolean isReload = false;
+        findViewById(R.id.btnInterPreload).setOnClickListener(v -> {
+            AdsInterCommon.getInstance().showInterSameTime(this,
+                    MyApplication.getApplication().getStorageCommon().interPriority,
+                    MyApplication.getApplication().getStorageCommon().interNormal,
+                    isReload,
+                    new AdsInterCallBack() {
+                        @Override
+                        public void onAdClosed() {
+                            startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
+                        }
+
+                        @Override
+                        public void onInterstitialNormalShowed() {
+                            Log.e("AdsInterCommon", "onInterstitialNormalShowed: ");
+                            AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
+                            if (!isReload){
+                                MyApplication.getApplication().getStorageCommon().interNormal = null;
+                            }
+                        }
+
+                        @Override
+                        public void onInterstitialPriorityShowed() {
+                            Log.e("AdsInterCommon", "onInterstitialPriorityShowed: ");
+                            AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
+                            if (!isReload){
+                                MyApplication.getApplication().getStorageCommon().interPriority = null;
+                            }
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            AperoLogEventManager.onTrackEvent("Inter_click"+getClass().getSimpleName());
+                        }
+
+                        @Override
+                        public void onNextAction() {
+                            startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
+                        }
+                    }
+            );
+        });
+
+    }
+
+    private void loadInterSameTime() {
+        AdsInterCommon.getInstance().loadInterSameTime(
+                this,
+                BuildConfig.ads_inter_priority,
+                BuildConfig.ad_interstitial,
+                new AperoAdCallback() {
+                    @Override
+                    public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
+                        super.onInterstitialLoad(interstitialAd);
+                        MyApplication.getApplication().getStorageCommon().interNormal = interstitialAd;
+                        Log.e("AdsInterCommon", "onInterstitialLoad: " );
+                    }
+
+                    @Override
+                    public void onInterPriorityLoaded(@Nullable ApInterstitialAd interstitialAd) {
+                        super.onInterPriorityLoaded(interstitialAd);
+                        MyApplication.getApplication().getStorageCommon().interPriority = interstitialAd;
+                        Log.e("AdsInterCommon", "onInterPriorityLoaded: " );
+                    }
+                });
     }
 
     private void configMediationProvider() {
@@ -231,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadNativeExit();
+        loadInterSameTime();
     }
 
     private void loadNativeExit() {
