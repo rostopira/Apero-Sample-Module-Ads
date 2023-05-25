@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        boolean isReload = true;
+        boolean isReload = false;
         findViewById(R.id.btnInterPreload).setOnClickListener(v -> {
             AdsInterCommon.getInstance().showInterSameTime(this,
                     MyApplication.getApplication().getStorageCommon().interPriority,
@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onInterstitialNormalShowed() {
+                            Log.e("AdsInterCommon", "onInterstitialNormalShowed: ");
                             AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
                             if (!isReload){
                                 MyApplication.getApplication().getStorageCommon().interNormal = null;
@@ -222,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onInterstitialPriorityShowed() {
+                            Log.e("AdsInterCommon", "onInterstitialPriorityShowed: ");
                             AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
                             if (!isReload){
                                 MyApplication.getApplication().getStorageCommon().interPriority = null;
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         AdsInterCommon.getInstance().loadInterSameTime(
                 this,
                 BuildConfig.ads_inter_priority,
-                BuildConfig.ads_inter_medium,
+                BuildConfig.ad_interstitial,
                 new AperoAdCallback() {
                     @Override
                     public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {

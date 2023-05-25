@@ -30,6 +30,7 @@ android {
             //use id test when dev
             manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713"]
             buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ad_interstitial", "\"ca-app-pub-3940256099942544/1033173712\""
             buildConfigField "String", "ad_banner", "\"ca-app-pub-3940256099942544/6300978111\""
             buildConfigField "String", "ad_reward", "\"ca-app-pub-3940256099942544/5224354917\""
             buildConfigField "String", "ad_reward_inter", "\"ca-app-pub-3940256099942544/5354046379\""
@@ -47,6 +48,8 @@ android {
             //add your id ad here
             manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713"]
             buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ad_interstitial", "\"ca-app-pub-3940256099942544/1033173712\""
+
             buildConfigField "String", "ad_banner", "\"ca-app-pub-3940256099942544/6300978111\""
             buildConfigField "String", "ad_reward", "\"ca-app-pub-3940256099942544/5224354917\""
             buildConfigField "String", "ad_reward_inter", "\"ca-app-pub-3940256099942544/5354046379\""

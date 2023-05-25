@@ -56,7 +56,6 @@ public class AdsInterCommon {
         }
         if (interPriority != null) {
             Log.e(TAG, "showInterSameTime: Ad priority");
-            adCallback.onInterstitialPriorityShowed();
             AperoAd.getInstance().forceShowInterstitial(
                     context,
                     interPriority,
@@ -78,11 +77,16 @@ public class AdsInterCommon {
                             super.onAdClicked();
                             adCallback.onAdClicked();
                         }
+
+                        @Override
+                        public void onInterstitialShow() {
+                            super.onInterstitialShow();
+                            adCallback.onInterstitialPriorityShowed();
+                        }
                     },
                     reload);
         } else if (interNormal != null) {
             Log.e(TAG, "showInterSameTime: Ad normal");
-            adCallback.onInterstitialNormalShowed();
             AperoAd.getInstance().forceShowInterstitial(
                     context,
                     interNormal,
@@ -96,6 +100,7 @@ public class AdsInterCommon {
                         @Override
                         public void onNextAction() {
                             super.onNextAction();
+
                             adCallback.onNextAction();
                         }
 
@@ -103,6 +108,10 @@ public class AdsInterCommon {
                         public void onAdClicked() {
                             super.onAdClicked();
                             adCallback.onAdClicked();
+                        }
+                        public void onInterstitialShow() {
+                            super.onInterstitialShow();
+                            adCallback.onInterstitialNormalShowed();
                         }
                     },
                     reload);
