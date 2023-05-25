@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         AdsInterCommon.getInstance().setAdIdsInter(
-                "BuildConfig.ads_inter_priority",
+                BuildConfig.ads_inter_priority,
                 BuildConfig.ad_interstitial_splash
         );
         AdsInterCommon.getInstance().loadInterSameTime(this, true, new AperoAdCallback(){
