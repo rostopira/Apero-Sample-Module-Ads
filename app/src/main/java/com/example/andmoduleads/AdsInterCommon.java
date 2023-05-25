@@ -47,7 +47,7 @@ public class AdsInterCommon {
         }
     }
 
-    public void showInterSameTime(Context context, ApInterstitialAd interPriority, ApInterstitialAd interNormal, Boolean reload, AperoAdCallback adCallback) {
+    public void showInterSameTime(Context context, ApInterstitialAd interPriority, ApInterstitialAd interNormal, Boolean reload, AdsInterCallBack adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adCallback != null) {
                 adCallback.onNextAction();
@@ -56,10 +56,56 @@ public class AdsInterCommon {
         }
         if (interPriority != null) {
             Log.e(TAG, "showInterSameTime: Ad priority");
-            AperoAd.getInstance().forceShowInterstitial(context, interPriority, adCallback, reload);
+            adCallback.onInterstitialPriorityShowed();
+            AperoAd.getInstance().forceShowInterstitial(
+                    context,
+                    interPriority,
+                    new AperoAdCallback() {
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            adCallback.onAdClosed();
+                        }
+
+                        @Override
+                        public void onNextAction() {
+                            super.onNextAction();
+                            adCallback.onNextAction();
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            adCallback.onAdClicked();
+                        }
+                    },
+                    reload);
         } else if (interNormal != null) {
             Log.e(TAG, "showInterSameTime: Ad normal");
-            AperoAd.getInstance().forceShowInterstitial(context, interNormal, adCallback, reload);
+            adCallback.onInterstitialNormalShowed();
+            AperoAd.getInstance().forceShowInterstitial(
+                    context,
+                    interNormal,
+                    new AperoAdCallback() {
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            adCallback.onAdClosed();
+                        }
+
+                        @Override
+                        public void onNextAction() {
+                            super.onNextAction();
+                            adCallback.onNextAction();
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            adCallback.onAdClicked();
+                        }
+                    },
+                    reload);
         } else {
             adCallback.onNextAction();
         }

@@ -30,6 +30,7 @@ import com.ads.control.event.AperoLogEventManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
+import com.example.andmoduleads.AdsInterCallBack;
 import com.example.andmoduleads.AdsInterCommon;
 import com.example.andmoduleads.BuildConfig;
 import com.example.andmoduleads.MyApplication;
@@ -199,35 +200,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        loadInterSameTime();
+        boolean isReload = true;
         findViewById(R.id.btnInterPreload).setOnClickListener(v -> {
             AdsInterCommon.getInstance().showInterSameTime(this,
                     MyApplication.getApplication().getStorageCommon().interPriority,
                     MyApplication.getApplication().getStorageCommon().interNormal,
-                    true,
-                    new AperoAdCallback() {
+                    isReload,
+                    new AdsInterCallBack() {
                         @Override
                         public void onAdClosed() {
-                            super.onAdClosed();
-                            loadInterSameTime();
                             startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
                         }
 
                         @Override
+                        public void onInterstitialNormalShowed() {
+                            AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
+                            if (!isReload){
+                                MyApplication.getApplication().getStorageCommon().interNormal = null;
+                            }
+                        }
+
+                        @Override
+                        public void onInterstitialPriorityShowed() {
+                            AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
+                            if (!isReload){
+                                MyApplication.getApplication().getStorageCommon().interPriority = null;
+                            }
+                        }
+
+                        @Override
                         public void onAdClicked() {
-                            super.onAdClicked();
                             AperoLogEventManager.onTrackEvent("Inter_click"+getClass().getSimpleName());
                         }
 
                         @Override
-                        public void onInterstitialShow() {
-                            super.onInterstitialShow();
-                            AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
-                        }
-
-                        @Override
                         public void onNextAction() {
-                            super.onNextAction();
                             startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
                         }
                     }
@@ -246,12 +253,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
                         super.onInterstitialLoad(interstitialAd);
                         MyApplication.getApplication().getStorageCommon().interNormal = interstitialAd;
+                        Log.e("AdsInterCommon", "onInterstitialLoad: " );
                     }
 
                     @Override
                     public void onInterPriorityLoaded(@Nullable ApInterstitialAd interstitialAd) {
                         super.onInterPriorityLoaded(interstitialAd);
                         MyApplication.getApplication().getStorageCommon().interPriority = interstitialAd;
+                        Log.e("AdsInterCommon", "onInterPriorityLoaded: " );
                     }
                 });
     }
@@ -289,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadNativeExit();
+        loadInterSameTime();
     }
 
     private void loadNativeExit() {
