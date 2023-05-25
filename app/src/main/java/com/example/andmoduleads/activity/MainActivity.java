@@ -26,11 +26,13 @@ import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.event.AperoAdjust;
+import com.ads.control.event.AperoLogEventManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
 import com.example.andmoduleads.AdsInterCommon;
 import com.example.andmoduleads.BuildConfig;
+import com.example.andmoduleads.MyApplication;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -196,31 +198,62 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-        AdsInterCommon.getInstance().setAdIdsInter(
-                BuildConfig.ads_inter_priority,
-                BuildConfig.ad_interstitial_splash
-        );
-        AdsInterCommon.getInstance().loadInterSameTime(this, true, new AperoAdCallback(){
 
-        });
+        loadInterSameTime();
         findViewById(R.id.btnInterPreload).setOnClickListener(v -> {
-            AdsInterCommon.getInstance().showInterSameTime(this, new AperoAdCallback(){
+            AdsInterCommon.getInstance().showInterSameTime(this,
+                    MyApplication.getApplication().getStorageCommon().interPriority,
+                    MyApplication.getApplication().getStorageCommon().interNormal,
+                    true,
+                    new AperoAdCallback() {
                         @Override
-                        public void onNextAction() {
-                            super.onNextAction();
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            loadInterSameTime();
                             startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
                         }
 
                         @Override
-                        public void onAdClosed() {
-                            super.onAdClosed();
-                            AdsInterCommon.getInstance().loadInterSameTime(MainActivity.this, true, new AperoAdCallback());
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            AperoLogEventManager.onTrackEvent("Inter_click"+getClass().getSimpleName());
+                        }
+
+                        @Override
+                        public void onInterstitialShow() {
+                            super.onInterstitialShow();
+                            AperoLogEventManager.onTrackEvent("Inter_show"+getClass().getSimpleName());
+                        }
+
+                        @Override
+                        public void onNextAction() {
+                            super.onNextAction();
                             startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
                         }
                     }
             );
         });
 
+    }
+
+    private void loadInterSameTime() {
+        AdsInterCommon.getInstance().loadInterSameTime(
+                this,
+                BuildConfig.ads_inter_priority,
+                BuildConfig.ads_inter_medium,
+                new AperoAdCallback() {
+                    @Override
+                    public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
+                        super.onInterstitialLoad(interstitialAd);
+                        MyApplication.getApplication().getStorageCommon().interNormal = interstitialAd;
+                    }
+
+                    @Override
+                    public void onInterPriorityLoaded(@Nullable ApInterstitialAd interstitialAd) {
+                        super.onInterPriorityLoaded(interstitialAd);
+                        MyApplication.getApplication().getStorageCommon().interPriority = interstitialAd;
+                    }
+                });
     }
 
     private void configMediationProvider() {
