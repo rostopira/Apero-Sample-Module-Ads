@@ -128,13 +128,6 @@ class App : AdsMultiDexApplication(){
     }
 }
 ~~~
-AndroidManiafest.xml
-~~~
-<application
-android:name=".App"
-...
->
-~~~
 
 ## <a id="ads_formats"></a>Ads formats
 ### Ad Splash Interstitial
@@ -749,14 +742,13 @@ Set id ad
 ~~~
 Load sametime
 ~~~
-  AperoAd.getInstance().loadAppOpenSplash3SameTime(context, id_inter, timeOut, timeDelay, showSplashIfReady, AperoAdCallback);
+  AperoAd.getInstance().loadAppOpenSplash3SameTime(context, id_inter, timeOut, timeDelay, true, AperoAdCallback);
 ~~~
 when hide app -> reopen app will be loaded forever, we will use this function in onResume
 * Note : First time opening the app ignore this function
 ~~~
-  AperoAd.getInstance().onCheckShowedAppOpen3WhenFail(context, timeDelay, showSplashIfReady, AperoAdCallback)
+  AperoAd.getInstance().onCheckShowedAppOpen3WhenFail(context, timeDelay, true, AperoAdCallback)
 ~~~
-* NOTE : showSplashIfReady = true
 
 # <a id="billing_app"></a>Billing app
 ## Init Billing
