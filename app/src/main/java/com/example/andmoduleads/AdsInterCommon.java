@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
+import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.billing.AppPurchase;
 
@@ -21,30 +22,64 @@ public class AdsInterCommon {
         return instance;
     }
 
+    private int loadTimesFailPriority = 0;
+    private int loadTimesFailNormal = 0;
+    private final int limitLoad = 2;
+
     public void loadInterSameTime(final Context context, String idAdInterPriority, String idAdInterNormal, AperoAdCallback adListener) {
         if (AppPurchase.getInstance().isPurchased(context)) {
             return;
         }
+        loadTimesFailPriority = 0;
+        loadTimesFailNormal = 0;
         if (MyApplication.getApplication().getStorageCommon().interPriority == null) {
-            Log.i(TAG, "getAdsInterPriority: ");
-            AperoAd.getInstance().getInterstitialAds(context, idAdInterPriority, new AperoAdCallback() {
-                @Override
-                public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
-                    super.onInterstitialLoad(interstitialAd);
-                    adListener.onInterPriorityLoaded(interstitialAd);
-                }
-            });
+            loadInterPriority(context, idAdInterPriority, adListener);
         }
         if (MyApplication.getApplication().getStorageCommon().interNormal == null) {
-            Log.i(TAG, "getAdsInterNormal: ");
-            AperoAd.getInstance().getInterstitialAds(context, idAdInterNormal, new AperoAdCallback() {
-                @Override
-                public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
-                    super.onInterstitialLoad(interstitialAd);
-                    adListener.onInterstitialLoad(interstitialAd);
-                }
-            });
+            loadInterNormal(context, idAdInterNormal, adListener);
         }
+    }
+
+    private void loadInterNormal(Context context, String idAdInterNormal, AperoAdCallback adListener) {
+        Log.e(TAG, "loadInterNormal: ");
+        AperoAd.getInstance().getInterstitialAds(context, idAdInterNormal, new AperoAdCallback() {
+            @Override
+            public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                adListener.onInterstitialLoad(interstitialAd);
+            }
+
+            @Override
+            public void onAdFailedToLoad(@Nullable ApAdError adError) {
+                super.onAdFailedToLoad(adError);
+                Log.e(TAG, "onAdFailedToLoad: Normal");
+                if (loadTimesFailNormal < limitLoad) {
+                    loadTimesFailNormal++;
+                    loadInterNormal(context, idAdInterNormal, adListener);
+                }
+            }
+        });
+    }
+
+    private void loadInterPriority(Context context, String idAdInterPriority, AperoAdCallback adListener) {
+        Log.e(TAG, "loadInterPriority: ");
+        AperoAd.getInstance().getInterstitialAds(context, idAdInterPriority, new AperoAdCallback() {
+            @Override
+            public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                adListener.onInterstitialLoad(interstitialAd);
+            }
+
+            @Override
+            public void onAdFailedToLoad(@Nullable ApAdError adError) {
+                super.onAdFailedToLoad(adError);
+                Log.e(TAG, "onAdFailedToLoad: Priority");
+                if (loadTimesFailPriority < limitLoad) {
+                    loadTimesFailPriority++;
+                    loadInterPriority(context, idAdInterPriority, adListener);
+                }
+            }
+        });
     }
 
     public void showInterSameTime(Context context, ApInterstitialAd interPriority, ApInterstitialAd interNormal, Boolean reload, AdsInterCallBack adCallback) {
@@ -109,6 +144,7 @@ public class AdsInterCommon {
                             super.onAdClicked();
                             adCallback.onAdClicked();
                         }
+
                         public void onInterstitialShow() {
                             super.onInterstitialShow();
                             adCallback.onInterstitialNormalShowed();
