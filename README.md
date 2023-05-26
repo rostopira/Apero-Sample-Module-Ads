@@ -341,7 +341,7 @@ Layout native admob sample
 ~~~
     <?xml version="1.0" encoding="utf-8"?>
     <com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/_5sdp">
     
@@ -353,12 +353,12 @@ Layout native admob sample
             android:orientation="vertical">
     
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
     
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingStart="25dip"
@@ -374,14 +374,14 @@ Layout native admob sample
                         android:src="@color/colorPrimary" />
     
                     <LinearLayout
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dip"
                         android:orientation="vertical">
     
                         <TextView
                             android:id="@+id/ad_headline"
-                            android:layout_width="fill_parent"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:maxLines="2"
@@ -408,7 +408,7 @@ Layout native admob sample
                 </LinearLayout>
     
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingHorizontal="10dp"
@@ -426,14 +426,14 @@ Layout native admob sample
     
                 <com.google.android.gms.ads.nativead.MediaView
                     android:id="@+id/ad_media"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_5sdp" />
     
                 <Button
                     android:id="@+id/ad_call_to_action"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/_35sdp"
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_5sdp"
@@ -470,7 +470,7 @@ Layout native max sample
     
             <LinearLayout
                 android:id="@+id/linearLayout3"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
@@ -488,14 +488,14 @@ Layout native max sample
                     android:src="@color/colorPrimary" />
     
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dip"
                     android:orientation="vertical">
     
                     <TextView
                         android:id="@+id/ad_headline"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
@@ -680,7 +680,8 @@ Show ad open app splash:
 ~~~
   AppOpenManager.getInstance().showAppOpenSplash(this, new AdCallback())
 ~~~
-Check show app open ad splash when failed ( in onResume )
+when hide app -> reopen app will be loaded forever, we will use this function in onResume
+* Note : First time opening the app ignore this function
 ~~~
   AppOpenManager.getInstance().onCheckShowAppOpenSplashWhenFail(this, new AdCallback())
 ~~~
@@ -701,7 +702,8 @@ Show ads interstital splash priority
 ~~~
   AperoAd.getInstance().onShowSplashPriority(Context context, AperoAdCallback adCallback)
 ~~~
-Check show interstital splash priority when failed  ( in onResume )
+when hide app -> reopen app will be loaded forever, we will use this function in onResume
+* Note : First time opening the app ignore this function
 ~~~
   AperoAd.getInstance().onCheckShowSplashPriorityWhenFail(Context context, AperoAdCallback adCallback)
 ~~~
@@ -734,6 +736,7 @@ Show ad
   AperoAd.getInstance().onShowSplashPriority3(activity, AperoAdCallback);
 ~~~
 when hide app -> reopen app will be loaded forever, we will use this function in onResume
+* Note : First time opening the app ignore this function
 ~~~
   AperoAd.getInstance().onCheckShowSplashPriority3WhenFail(activity, AperoAdCallback, timedelay);
 ~~~
@@ -748,7 +751,8 @@ Load sametime
 ~~~
   AperoAd.getInstance().loadAppOpenSplash3SameTime(context, id_inter, timeOut, timeDelay, showSplashIfReady, AperoAdCallback);
 ~~~
-Check show app open ad splash when failed ( in onResume )
+when hide app -> reopen app will be loaded forever, we will use this function in onResume
+* Note : First time opening the app ignore this function
 ~~~
   AperoAd.getInstance().onCheckShowedAppOpen3WhenFail(context, timeDelay, showSplashIfReady, AperoAdCallback)
 ~~~
