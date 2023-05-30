@@ -25,7 +25,7 @@ Contact us for account
     maven {
         url 'https://artifact.bytedance.com/repository/pangle'
     }
-    implementation 'apero-inhouse:apero-ads:1.0.6-alpha07'
+    implementation 'apero-inhouse:apero-ads:1.0.6-alpha09'
 ~~~  
 # Summary
 * [Setup AperoAd](#setup_aperoad)
