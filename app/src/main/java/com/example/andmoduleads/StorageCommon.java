@@ -9,4 +9,8 @@ public class StorageCommon {
     public MutableLiveData<ApNativeAd> nativeAdsLanguage = new MutableLiveData<>();
     public ApInterstitialAd interPriority;
     public ApInterstitialAd interNormal;
+
+    public ApNativeAd nativeAdHigh;
+    public ApNativeAd nativeAdMedium;
+    public ApNativeAd nativeAdNormal;
 }

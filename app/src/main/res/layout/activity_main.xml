@@ -94,6 +94,14 @@
             android:layout_below="@+id/btnAdjustTrack"
             android:layout_centerHorizontal="true"
             android:text="Show Ad inter" />
+
+        <Button
+            android:id="@+id/btnNativePreload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnInterPreload"
+            android:layout_centerHorizontal="true"
+            android:text="Show Preload Native" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.ads.control.ads.bannerAds.AperoBannerAdView
