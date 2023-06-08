@@ -176,7 +176,7 @@ public class PreloadAdsUtils {
         }
     }
 
-    public void getLayoutNative(int layoutNativeCustom){
+    public void setLayoutNative(int layoutNativeCustom){
         if (MyApplication.getApplication().getStorageCommon().nativeAdHigh != null){
             MyApplication.getApplication().getStorageCommon().apNativeAdHigh =
                     new ApNativeAd(layoutNativeCustom, MyApplication.getApplication().getStorageCommon().nativeAdHigh);
@@ -343,18 +343,21 @@ public class PreloadAdsUtils {
             public void onNativeAdShow() {
                 MyApplication.getApplication().getStorageCommon().apNativeAdNormal = null;
                 MyApplication.getApplication().getStorageCommon().nativeAdNormal = null;
+                PreloadAdsUtils.getInstance().preLoadNativeSameTime(activity);
             }
 
             @Override
             public void onNativeHighAdShow() {
                 MyApplication.getApplication().getStorageCommon().nativeAdHigh = null;
                 MyApplication.getApplication().getStorageCommon().apNativeAdHigh = null;
+                PreloadAdsUtils.getInstance().preLoadNativeSameTime(activity);
             }
 
             @Override
             public void onNativeMediumAdShow() {
                 MyApplication.getApplication().getStorageCommon().nativeAdMedium = null;
                 MyApplication.getApplication().getStorageCommon().apNativeAdMedium = null;
+                PreloadAdsUtils.getInstance().preLoadNativeSameTime(activity);
             }
         };
 

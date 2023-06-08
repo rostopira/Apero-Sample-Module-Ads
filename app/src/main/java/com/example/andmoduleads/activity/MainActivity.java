@@ -16,7 +16,6 @@ import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
-import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.config.AperoAdConfig;
 import com.ads.control.ads.bannerAds.AperoBannerAdView;
 import com.ads.control.ads.nativeAds.AperoNativeAdView;
@@ -247,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnNativePreload).setOnClickListener(view -> {
-            PreloadAdsUtils.getInstance().getLayoutNative(R.layout.custom_native_ads_language_first);
+            PreloadAdsUtils.getInstance().setLayoutNative(R.layout.custom_native_ads_language_first);
             startActivity(new Intent(MainActivity.this, TestNativeAdActivity.class));
         });
 

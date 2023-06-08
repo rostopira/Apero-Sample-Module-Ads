@@ -26,10 +26,4 @@ public class TestNativeAdActivity extends AppCompatActivity {
                 binding.includeNative.shimmerContainerNative
         );
     }
-
-    @Override
-    protected void onDestroy() {
-        PreloadAdsUtils.getInstance().preLoadNativeSameTime(this);
-        super.onDestroy();
-    }
 }
