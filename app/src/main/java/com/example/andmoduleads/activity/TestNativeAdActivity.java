@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.andmoduleads.MyApplication;
-import com.example.andmoduleads.PreloadAdsCallback;
 import com.example.andmoduleads.databinding.ActivityTestNativeAdBinding;
 import com.example.andmoduleads.utils.PreloadAdsUtils;
 
@@ -24,27 +22,14 @@ public class TestNativeAdActivity extends AppCompatActivity {
     private void showPreNative() {
         PreloadAdsUtils.getInstance().showPreNativeSametime(
                 TestNativeAdActivity.this,
-                MyApplication.getApplication().getStorageCommon().nativeAdHigh,
-                MyApplication.getApplication().getStorageCommon().nativeAdMedium,
-                MyApplication.getApplication().getStorageCommon().nativeAdNormal,
                 binding.frAds,
-                binding.includeNative.shimmerContainerNative,
-                new PreloadAdsCallback() {
-                    @Override
-                    public void onNativeAdShow() {
-                        MyApplication.getApplication().getStorageCommon().nativeAdNormal = null;
-                    }
-
-                    @Override
-                    public void onNativeHighAdShow() {
-                        MyApplication.getApplication().getStorageCommon().nativeAdHigh = null;
-                    }
-
-                    @Override
-                    public void onNativeMediumAdShow() {
-                        MyApplication.getApplication().getStorageCommon().nativeAdMedium = null;
-                    }
-                }
+                binding.includeNative.shimmerContainerNative
         );
+    }
+
+    @Override
+    protected void onDestroy() {
+        PreloadAdsUtils.getInstance().preLoadNativeSameTime(this);
+        super.onDestroy();
     }
 }

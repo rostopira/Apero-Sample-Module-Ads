@@ -9,15 +9,21 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.ads.control.admob.Admob;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.billing.AppPurchase;
-import com.example.andmoduleads.PreloadAdsCallback;
+import com.ads.control.funtion.AdCallback;
+import com.example.andmoduleads.AdsInterCallBack;
+import com.example.andmoduleads.BuildConfig;
 import com.example.andmoduleads.MyApplication;
+import com.example.andmoduleads.PreloadNativeCallback;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.nativead.NativeAd;
 
 public class PreloadAdsUtils {
     private static final String TAG = "PreloadAdsUtils";
@@ -96,7 +102,7 @@ public class PreloadAdsUtils {
             ApInterstitialAd interPriority,
             ApInterstitialAd interNormal,
             Boolean reload,
-            PreloadAdsCallback adCallback) {
+            AdsInterCallBack adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adCallback != null) {
                 adCallback.onNextAction();
@@ -170,149 +176,215 @@ public class PreloadAdsUtils {
         }
     }
 
-    public void preLoadNativeSameTime(
-            final Activity activity,
-            String idAdNativeHigh,
-            String idAdNativeMedium,
-            String idAdNativeNormal,
-            int layoutNativeCustom,
-            PreloadAdsCallback callBack) {
+    public void getLayoutNative(int layoutNativeCustom){
+        if (MyApplication.getApplication().getStorageCommon().nativeAdHigh != null){
+            MyApplication.getApplication().getStorageCommon().apNativeAdHigh =
+                    new ApNativeAd(layoutNativeCustom, MyApplication.getApplication().getStorageCommon().nativeAdHigh);
+        } else if (MyApplication.getApplication().getStorageCommon().nativeAdMedium != null){
+            MyApplication.getApplication().getStorageCommon().apNativeAdMedium =
+                    new ApNativeAd(layoutNativeCustom, MyApplication.getApplication().getStorageCommon().nativeAdMedium);
+        } else if (MyApplication.getApplication().getStorageCommon().nativeAdNormal != null){
+            MyApplication.getApplication().getStorageCommon().apNativeAdNormal =
+                    new ApNativeAd(layoutNativeCustom, MyApplication.getApplication().getStorageCommon().nativeAdNormal);
+        }
+    }
+
+    public void preLoadNativeSameTime(final Activity activity) {
         if (AppPurchase.getInstance().isPurchased(activity)) {
             return;
         }
         loadTimesFailHigh = 0;
         loadTimesFailMedium = 0;
         loadTimesFailNormal = 0;
+
+        PreloadNativeCallback callBack = new PreloadNativeCallback() {
+            @Override
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+                MyApplication.getApplication().getStorageCommon().nativeAdNormal = nativeAd;
+            }
+
+            @Override
+            public void onNativeHighAdLoaded(NativeAd nativeAd) {
+                MyApplication.getApplication().getStorageCommon().nativeAdHigh = nativeAd;
+            }
+
+            @Override
+            public void onNativeMediumAdLoaded(NativeAd nativeAd) {
+                MyApplication.getApplication().getStorageCommon().nativeAdMedium = nativeAd;
+            }
+
+            @Override
+            public void onNativeAdShow() {}
+
+            @Override
+            public void onNativeHighAdShow() {}
+
+            @Override
+            public void onNativeMediumAdShow() {}
+        };
+
         if (MyApplication.getApplication().getStorageCommon().nativeAdHigh == null) {
-            loadNativeHigh(activity, idAdNativeHigh, layoutNativeCustom, callBack);
+            loadNativeHigh(activity, BuildConfig.ad_native_priority, callBack);
         }
         if (MyApplication.getApplication().getStorageCommon().nativeAdMedium == null) {
-            loadNativeMedium(activity, idAdNativeMedium, layoutNativeCustom, callBack);
+            loadNativeMedium(activity, BuildConfig.ad_native_medium, callBack);
         }
         if (MyApplication.getApplication().getStorageCommon().nativeAdNormal == null) {
-            loadNativeNormal(activity, idAdNativeNormal, layoutNativeCustom, callBack);
+            loadNativeNormal(activity, BuildConfig.ad_native, callBack);
         }
     }
 
     private void loadNativeHigh(
             Activity activity,
             String idNativeHigh,
-            int layoutNativeCustom,
-            PreloadAdsCallback callBack) {
-        Log.d(TAG, "loadNativeHigh");
-        AperoAd.getInstance().loadNativeAdResultCallback(
+            PreloadNativeCallback callBack) {
+        Admob.getInstance().loadNativeAd(
                 activity,
                 idNativeHigh,
-                layoutNativeCustom,
-                new AperoAdCallback() {
+                new AdCallback(){
                     @Override
-                    public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
-                        super.onNativeAdLoaded(nativeAd);
-                        callBack.onNativeHighAdLoaded(nativeAd);
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        Log.d(TAG, "loadNativeHigh");
+                        callBack.onNativeHighAdLoaded(unifiedNativeAd);
                     }
 
                     @Override
-                    public void onAdFailedToLoad(@Nullable ApAdError adError) {
-                        super.onAdFailedToLoad(adError);
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        Log.d(TAG, "FailToLoadNativeHigh");
                         if (loadTimesFailHigh < limitLoad) {
                             loadTimesFailHigh++;
-                            loadNativeHigh(activity, idNativeHigh, layoutNativeCustom, callBack);
+                            loadNativeHigh(activity, idNativeHigh, callBack);
                         }
                     }
-                });
+                }
+        );
     }
 
     private void loadNativeMedium(
             Activity activity,
             String idNativeMedium,
-            int layoutNativeCustom,
-            PreloadAdsCallback adListener) {
-        Log.d(TAG, "loadNativeMedium");
-        AperoAd.getInstance().loadNativeAdResultCallback(
+            PreloadNativeCallback callBack) {
+        Admob.getInstance().loadNativeAd(
                 activity,
                 idNativeMedium,
-                layoutNativeCustom,
-                new AperoAdCallback() {
+                new AdCallback(){
                     @Override
-                    public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
-                        super.onNativeAdLoaded(nativeAd);
-                        adListener.onNativeMediumAdLoaded(nativeAd);
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        Log.d(TAG, "loadNativeMedium");
+                        callBack.onNativeMediumAdLoaded(unifiedNativeAd);
                     }
 
                     @Override
-                    public void onAdFailedToLoad(@Nullable ApAdError adError) {
-                        super.onAdFailedToLoad(adError);
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        Log.d(TAG, "FailToLoadNativeMedium");
                         if (loadTimesFailMedium < limitLoad) {
                             loadTimesFailMedium++;
-                            loadNativeMedium(activity, idNativeMedium, layoutNativeCustom, adListener);
+                            loadNativeMedium(activity, idNativeMedium, callBack);
                         }
                     }
-                });
+                }
+        );
     }
 
     private void loadNativeNormal(
             Activity activity,
             String idNativeNormal,
-            int layoutNativeCustom,
-            PreloadAdsCallback callBack) {
-        Log.d(TAG, "loadNativeNormal");
-        AperoAd.getInstance().loadNativeAdResultCallback(
+            PreloadNativeCallback callBack) {
+        Admob.getInstance().loadNativeAd(
                 activity,
                 idNativeNormal,
-                layoutNativeCustom,
-                new AperoAdCallback() {
+                new AdCallback(){
                     @Override
-                    public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
-                        super.onNativeAdLoaded(nativeAd);
-                        callBack.onNativeAdLoaded(nativeAd);
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        Log.d(TAG, "loadNativeNormal");
+                        callBack.onNativeAdLoaded(unifiedNativeAd);
                     }
 
                     @Override
-                    public void onAdFailedToLoad(@Nullable ApAdError adError) {
-                        super.onAdFailedToLoad(adError);
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        Log.d(TAG, "FailToLoadNativeNormal");
                         if (loadTimesFailNormal < limitLoad) {
                             loadTimesFailNormal++;
-                            loadNativeNormal(activity, idNativeNormal, layoutNativeCustom, callBack);
+                            loadNativeNormal(activity, idNativeNormal, callBack);
                         }
                     }
-                });
+                }
+        );
     }
 
     public void showPreNativeSametime(
             Activity activity,
-            ApNativeAd nativeAdHigh,
-            ApNativeAd nativeAdMedium,
-            ApNativeAd nativeAdNormal,
             FrameLayout adPlaceHolder,
-            ShimmerFrameLayout containerShimmerLoading,
-            PreloadAdsCallback callBack) {
-        if (nativeAdHigh != null) {
+            ShimmerFrameLayout containerShimmerLoading) {
+
+        PreloadNativeCallback callback = new PreloadNativeCallback() {
+            @Override
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+
+            }
+
+            @Override
+            public void onNativeHighAdLoaded(NativeAd nativeAd) {
+
+            }
+
+            @Override
+            public void onNativeMediumAdLoaded(NativeAd nativeAd) {
+
+            }
+
+            @Override
+            public void onNativeAdShow() {
+                MyApplication.getApplication().getStorageCommon().apNativeAdNormal = null;
+                MyApplication.getApplication().getStorageCommon().nativeAdNormal = null;
+            }
+
+            @Override
+            public void onNativeHighAdShow() {
+                MyApplication.getApplication().getStorageCommon().nativeAdHigh = null;
+                MyApplication.getApplication().getStorageCommon().apNativeAdHigh = null;
+            }
+
+            @Override
+            public void onNativeMediumAdShow() {
+                MyApplication.getApplication().getStorageCommon().nativeAdMedium = null;
+                MyApplication.getApplication().getStorageCommon().apNativeAdMedium = null;
+            }
+        };
+
+        if (MyApplication.getApplication().getStorageCommon().apNativeAdHigh != null) {
             Log.d(TAG, "showPreNativeSametime: nativeAdHigh");
             AperoAd.getInstance().populateNativeAdView(
                     activity,
-                    nativeAdHigh,
+                    MyApplication.getApplication().getStorageCommon().apNativeAdHigh,
                     adPlaceHolder,
                     containerShimmerLoading
             );
-            callBack.onNativeHighAdShow();
-        } else if (nativeAdMedium != null) {
+            callback.onNativeHighAdShow();
+        } else if (MyApplication.getApplication().getStorageCommon().apNativeAdMedium != null) {
             Log.d(TAG, "showPreNativeSametime: nativeAdMedium");
             AperoAd.getInstance().populateNativeAdView(
                     activity,
-                    nativeAdMedium,
+                    MyApplication.getApplication().getStorageCommon().apNativeAdMedium,
                     adPlaceHolder,
                     containerShimmerLoading
             );
-            callBack.onNativeMediumAdShow();
-        } else if (nativeAdNormal != null) {
+            callback.onNativeMediumAdShow();
+        } else if (MyApplication.getApplication().getStorageCommon().apNativeAdNormal != null) {
             Log.d(TAG, "showPreNativeSametime: nativeAdNormal");
             AperoAd.getInstance().populateNativeAdView(
                     activity,
-                    nativeAdNormal,
+                    MyApplication.getApplication().getStorageCommon().apNativeAdNormal,
                     adPlaceHolder,
                     containerShimmerLoading
             );
-            callBack.onNativeAdShow();
+            callback.onNativeAdShow();
         } else {
             adPlaceHolder.setVisibility(View.GONE);
         }

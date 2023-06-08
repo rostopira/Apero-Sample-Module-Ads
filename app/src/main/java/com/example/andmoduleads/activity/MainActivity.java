@@ -31,7 +31,7 @@ import com.ads.control.event.AperoLogEventManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
-import com.example.andmoduleads.PreloadAdsCallback;
+import com.example.andmoduleads.AdsInterCallBack;
 import com.example.andmoduleads.utils.PreloadAdsUtils;
 import com.example.andmoduleads.BuildConfig;
 import com.example.andmoduleads.MyApplication;
@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         aperoNativeAdView.loadNativeAd(this, idNative,layoutNativeCustom,R.layout.loading_native_medium);
         */
         aperoNativeAdView.loadNativeAd(this, idNative);
+
+        PreloadAdsUtils.getInstance().preLoadNativeSameTime(this);
 
 
         AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
@@ -207,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     MyApplication.getApplication().getStorageCommon().interPriority,
                     MyApplication.getApplication().getStorageCommon().interNormal,
                     isReload,
-                    new PreloadAdsCallback() {
+                    new AdsInterCallBack() {
                         @Override
                         public void onAdClosed() {
                             startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
@@ -245,37 +247,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnNativePreload).setOnClickListener(view -> {
+            PreloadAdsUtils.getInstance().getLayoutNative(R.layout.custom_native_ads_language_first);
             startActivity(new Intent(MainActivity.this, TestNativeAdActivity.class));
         });
 
-    }
-
-    private void preLoadNative(){
-        if (!AppPurchase.getInstance().isPurchased()){
-            PreloadAdsUtils.getInstance().preLoadNativeSameTime(
-                    this,
-                    BuildConfig.ad_native_priority,
-                    BuildConfig.ad_native_medium,
-                    BuildConfig.ad_native,
-                    R.layout.custom_native_ads_language_first,
-                    new PreloadAdsCallback() {
-                        @Override
-                        public void onNativeAdLoaded(ApNativeAd nativeAd) {
-                            MyApplication.getApplication().getStorageCommon().nativeAdNormal = nativeAd;
-                        }
-
-                        @Override
-                        public void onNativeHighAdLoaded(ApNativeAd nativeAd) {
-                            MyApplication.getApplication().getStorageCommon().nativeAdHigh = nativeAd;
-                        }
-
-                        @Override
-                        public void onNativeMediumAdLoaded(ApNativeAd nativeAd) {
-                            MyApplication.getApplication().getStorageCommon().nativeAdMedium = nativeAd;
-                        }
-                    }
-            );
-        }
     }
 
     private void loadInterSameTime() {
@@ -334,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadNativeExit();
         loadInterSameTime();
-        preLoadNative();
     }
 
     private void loadNativeExit() {
