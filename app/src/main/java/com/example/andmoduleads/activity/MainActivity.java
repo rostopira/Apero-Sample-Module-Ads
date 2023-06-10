@@ -31,7 +31,7 @@ import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
 import com.example.andmoduleads.AdsInterCallBack;
-import com.example.andmoduleads.AdsInterCommon;
+import com.example.andmoduleads.utils.PreloadAdsUtils;
 import com.example.andmoduleads.BuildConfig;
 import com.example.andmoduleads.MyApplication;
 import com.example.andmoduleads.R;
@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         aperoNativeAdView.loadNativeAd(this, idNative,layoutNativeCustom,R.layout.loading_native_medium);
         */
         aperoNativeAdView.loadNativeAd(this, idNative);
+
+        PreloadAdsUtils.getInstance().preLoadNativeSameTime(this);
 
 
         AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
@@ -202,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
         boolean isReload = false;
         findViewById(R.id.btnInterPreload).setOnClickListener(v -> {
-            AdsInterCommon.getInstance().showInterSameTime(this,
+            PreloadAdsUtils.getInstance().showInterSameTime(this,
                     MyApplication.getApplication().getStorageCommon().interPriority,
                     MyApplication.getApplication().getStorageCommon().interNormal,
                     isReload,
@@ -243,10 +245,15 @@ public class MainActivity extends AppCompatActivity {
             );
         });
 
+        findViewById(R.id.btnNativePreload).setOnClickListener(view -> {
+            PreloadAdsUtils.getInstance().setLayoutNative(R.layout.custom_native_ads_language_first);
+            startActivity(new Intent(MainActivity.this, TestNativeAdActivity.class));
+        });
+
     }
 
     private void loadInterSameTime() {
-        AdsInterCommon.getInstance().loadInterSameTime(
+        PreloadAdsUtils.getInstance().loadInterSameTime(
                 this,
                 BuildConfig.ads_inter_priority,
                 BuildConfig.ad_interstitial,
