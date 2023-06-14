@@ -93,7 +93,7 @@ dependencies {
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     //implementation 'com.github.AperoVN:AperoModuleAds:5.5.3-alpha3'
-    implementation 'apero-inhouse:apero-ads:1.0.6-alpha07'
+    implementation 'apero-global:apero-ads:1.0.1'
     implementation 'apero:language.first.open:1.1.5@aar'
 }
 repositories {

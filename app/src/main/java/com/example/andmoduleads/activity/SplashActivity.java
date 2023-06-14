@@ -48,41 +48,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        if (AperoAd.getInstance().getMediationProvider() == AperoAdConfig.PROVIDER_ADMOB)
-            idAdSplash = BuildConfig.ad_interstitial_splash;
-        else
-            idAdSplash = getString(R.string.applovin_test_inter);
-        AppPurchase.getInstance().setBillingListener(new BillingListener() {
-            @Override
-            public void onInitBillingFinished(int code) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (NetworkUtil.isOnline()) {
-                            loadInterSplash3();
-                        } else {
-                            startMain();
-                        }
-                    }
-                });
-            }
-        }, 5000);
-
-        //loadAndShowOpenAppSplash();
-
-        AppPurchase.getInstance().setEventConsumePurchaseTest(findViewById(R.id.txtLoading));
-
-//        testCase();
-    }
-
-    private void createLanguages() {
-        List<Language> list = new ArrayList<>();
-        list.add(new Language("en", getString(R.string.language_english), R.drawable.ic_language_en, false));
-        list.add(new Language("hi", getString(R.string.language_hindi), R.drawable.ic_language_hi, false));
-        list.add(new Language("ja", getString(R.string.language_japan), R.drawable.ic_language_ja, false));
-
-        LanguageFirstOpen.Companion.setLanguagesLimitItem(list);
-        LanguageFirstOpen.Companion.setSizeLayoutLoadingAdNative(300f);// use dp
+        reproduceCrash();
     }
 
     private void loadNativeAdsFirstLanguageOpen() {
@@ -92,6 +58,19 @@ public class SplashActivity extends AppCompatActivity {
             /*use native medium then use this function*/
             /*loadNativeLanguage3();*/
         }
+    }
+
+    private void reproduceCrash() {
+        AppOpenManager.getInstance().setSplashAdId("ca-app-pub-3940256099942544/3419835294");
+        AppOpenManager.getInstance().setSplashAdId("ca-app-pub-3940256099942544/3419835294");
+        AperoAd.getInstance().loadAppOpenSplash3SameTime(
+            this,
+    "ca-app-pub-3940256099942544/1033173712",
+            3000L,
+            0L,
+            true,
+            adCallback
+        );
     }
 
     private void loadNativeLanguageHigh(){
